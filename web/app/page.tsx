@@ -126,34 +126,28 @@ export default function Home() {
     <main className="max-w-4xl mx-auto px-4 py-8 relative">
       {/* Header with T and CT */}
       <div className="relative mb-10">
-        {/* T character - left */}
-        <div className="hidden md:block absolute -left-16 top-1/2 -translate-y-1/2 opacity-20">
-          <svg width="100" height="140" viewBox="0 0 100 140" fill="none">
-            <circle cx="50" cy="20" r="16" fill="#ca8a04"/>
-            <path d="M50 36 L30 55 L25 90 L35 90 L40 70 L50 80 L60 70 L65 90 L75 90 L70 55 Z" fill="#ca8a04"/>
-            <path d="M30 55 L15 80 L25 82 L35 65" fill="#ca8a04"/>
-            <path d="M70 55 L85 75 L75 78 L65 62" fill="#ca8a04"/>
-            <rect x="80" y="65" width="15" height="4" rx="2" fill="#ca8a04" transform="rotate(-20 80 65)"/>
-            <path d="M35 90 L30 130 L40 130 L45 95 M65 90 L70 130 L60 130 L55 95" fill="#ca8a04"/>
+        {/* AK-47 (T side) - left */}
+        <div className="hidden md:block absolute -left-20 top-1/2 -translate-y-1/2 opacity-15">
+          <svg width="140" height="60" viewBox="0 0 140 60" fill="none">
+            <path d="M5 28 L40 26 L45 24 L95 22 L100 20 L130 20 L135 22 L130 24 L100 24 L95 26 L80 26 L78 35 L82 45 L78 46 L74 36 L72 28 L45 28 L40 30 L35 40 L38 50 L34 50 L30 38 L28 30 L5 32 Z" fill="#ca8a04"/>
+            <rect x="95" y="15" width="3" height="8" fill="#ca8a04"/>
+            <path d="M42 28 L44 38 L40 38 L38 28" fill="#ca8a04"/>
           </svg>
         </div>
 
-        {/* CT character - right */}
-        <div className="hidden md:block absolute -right-16 top-1/2 -translate-y-1/2 opacity-20">
-          <svg width="100" height="140" viewBox="0 0 100 140" fill="none">
-            <circle cx="50" cy="18" r="16" fill="#5d9bec"/>
-            <path d="M45 8 L55 8 L55 5 L45 5 Z" fill="#5d9bec"/>
-            <path d="M50 34 L28 55 L23 90 L33 90 L38 70 L50 80 L62 70 L67 90 L77 90 L72 55 Z" fill="#5d9bec"/>
-            <path d="M28 55 L10 78 L20 82 L33 62" fill="#5d9bec"/>
-            <path d="M72 55 L88 72 L78 76 L67 60" fill="#5d9bec"/>
-            <rect x="82" y="62" width="18" height="4" rx="2" fill="#5d9bec" transform="rotate(-15 82 62)"/>
-            <path d="M33 90 L28 130 L38 130 L43 95 M67 90 L72 130 L62 130 L57 95" fill="#5d9bec"/>
+        {/* M4A4 (CT side) - right */}
+        <div className="hidden md:block absolute -right-20 top-1/2 -translate-y-1/2 opacity-15 -scale-x-100">
+          <svg width="140" height="60" viewBox="0 0 140 60" fill="none">
+            <path d="M5 26 L25 25 L30 23 L90 21 L95 19 L130 19 L135 21 L130 23 L95 23 L90 25 L75 25 L73 32 L76 42 L72 43 L69 33 L67 27 L30 27 L25 29 L20 38 L16 38 L20 29 L5 30 Z" fill="#5d9bec"/>
+            <rect x="90" y="14" width="3" height="8" fill="#5d9bec"/>
+            <rect x="100" y="17" width="15" height="3" rx="1" fill="#5d9bec"/>
+            <path d="M60 27 L62 22 L65 22 L63 27" fill="#5d9bec"/>
           </svg>
         </div>
 
         <div className="text-center">
           <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-[#0f3460]/50 border border-[#0f3460]">
-            <span className="text-xs text-gray-300 tracking-wide">MGTA621/622 &mdash; MMA Field Project</span>
+            <span className="text-xs text-gray-300 tracking-wide">MGTA 611 &mdash; MMA Field Project</span>
           </div>
           <h1 className="text-5xl font-black mb-3 tracking-tight">
             <span className="text-yellow-400">CS2</span>{" "}
