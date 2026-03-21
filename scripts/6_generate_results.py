@@ -124,11 +124,52 @@ def main():
 
     # ---- Model comparison summary ----
     print("Generating model comparison...")
+    # Load baseline results
+    baseline_results = {}
+    for name, fname in [("logistic_regression", "logistic_regression_results.json"),
+                        ("knn", "knn_results.json"),
+                        ("random_forest", "random_forest_results.json")]:
+        fpath = RESULTS_PATH / fname
+        if fpath.exists():
+            with open(fpath) as f:
+                baseline_results[name] = json.load(f)
+
     comparison = {
         "models": [
             {
+                "name": "Logistic Regression",
+                "script": "scripts/0a_logistic_regression.py",
+                "type": "Linear classifier",
+                "features": 86,
+                "data": "mid-round snapshots (161,271 snapshots)",
+                "test_accuracy": baseline_results.get("logistic_regression", {}).get("test_accuracy", None),
+                "test_auc": baseline_results.get("logistic_regression", {}).get("test_auc", None),
+                "notes": "Step 0a - simplest baseline, linear decision boundary",
+            },
+            {
+                "name": "K-Nearest Neighbors",
+                "script": "scripts/0b_knn.py",
+                "type": "Instance-based classifier",
+                "features": 86,
+                "data": "mid-round snapshots (161,271 snapshots)",
+                "test_accuracy": baseline_results.get("knn", {}).get("test_accuracy", None),
+                "test_auc": baseline_results.get("knn", {}).get("test_auc", None),
+                "best_k": baseline_results.get("knn", {}).get("hyperparameters", {}).get("best_k", None),
+                "notes": "Step 0b - finds similar game states and votes on winner",
+            },
+            {
+                "name": "Random Forest",
+                "script": "scripts/0c_random_forest.py",
+                "type": "Ensemble (bagging)",
+                "features": 86,
+                "data": "mid-round snapshots (161,271 snapshots)",
+                "test_accuracy": baseline_results.get("random_forest", {}).get("test_accuracy", None),
+                "test_auc": baseline_results.get("random_forest", {}).get("test_auc", None),
+                "notes": "Step 0c - ensemble of 500 decision trees",
+            },
+            {
                 "name": "LSTM (round-start)",
-                "script": "scripts/train_lstm.py",
+                "script": "scripts/2_train_lstm.py",
                 "model_file": "models/lstm_baseline.pth",
                 "type": "Bidirectional LSTM",
                 "features": 15,
@@ -137,11 +178,11 @@ def main():
                 "test_auc": None,
                 "parameters": 199553,
                 "epochs_trained": 46,
-                "notes": "Baseline - predicting at round start is nearly impossible",
+                "notes": "Step 2 - first DL attempt, proved round-start features are insufficient",
             },
             {
                 "name": "XGBoost",
-                "script": "scripts/train_xgboost.py",
+                "script": "scripts/3_train_xgboost.py",
                 "model_file": "models/xgboost.json",
                 "type": "Gradient Boosted Trees",
                 "features": 86,
@@ -149,11 +190,11 @@ def main():
                 "test_accuracy": 0.8939,
                 "test_auc": 0.9635,
                 "cv_accuracy": "85.08% +/- 0.20%",
-                "notes": "Feature validation baseline - confirmed features have signal",
+                "notes": "Step 3 - gradient boosting baseline on snapshot features",
             },
             {
                 "name": "MLP Standard",
-                "script": "scripts/train_mlp.py",
+                "script": "scripts/4_train_mlp.py",
                 "model_file": "models/mlp_standard.pth",
                 "type": "Feedforward MLP",
                 "architecture": [512, 256, 128, 64],
@@ -162,11 +203,11 @@ def main():
                 "test_accuracy": float(std_acc),
                 "test_auc": float(std_auc),
                 "parameters": int(sum(p.numel() for p in mlp_std.parameters())),
-                "notes": "Deep learning model for course requirement",
+                "notes": "Step 4 - deep learning model for course requirement",
             },
             {
                 "name": "MLP Tuned (Optuna)",
-                "script": "scripts/tune_mlp.py",
+                "script": "scripts/5_tune_mlp.py",
                 "model_file": "models/mlp_tuned.pth",
                 "type": "Feedforward MLP (Optuna-optimized)",
                 "architecture": tuned_arch,
@@ -177,7 +218,7 @@ def main():
                 "parameters": int(sum(p.numel() for p in mlp_tuned.parameters())),
                 "optuna_trials": 50,
                 "best_val_accuracy": tuning_data["best_val_accuracy"],
-                "notes": "Best model - 50 Optuna trials with GPU-accelerated search",
+                "notes": "Step 5 - best model, Optuna hyperparameter search",
             },
         ],
         "dataset": {
@@ -193,11 +234,12 @@ def main():
             },
         },
         "key_findings": [
-            "Round-start prediction (53%) vs mid-round snapshots (95.75%) shows game state during round is far more predictive than pre-round economy",
-            "man_advantage (player count diff) is the single most important feature at 29.8% importance",
-            "Deep learning (MLP) outperforms XGBoost by 6.4% on this task",
-            "Optuna tuning improved MLP accuracy by 2.5% (93.2% -> 95.75%)",
-            "Wider/deeper architectures with low dropout (0.1) work best",
+            "Logistic Regression (76%) proves features have signal but relationships are non-linear",
+            "KNN (93.8%) shows similar game states reliably predict outcomes",
+            "Random Forest (89.9%) and XGBoost (89.4%) are strong tree-based baselines",
+            "MLP (93.9%) matches KNN and captures non-linear patterns learned end-to-end",
+            "Tuned MLP (95.75%) beats all models after Optuna hyperparameter search",
+            "Round-start LSTM (53%) vs mid-round models proves snapshot features are critical",
         ],
     }
     with open(RESULTS_PATH / "model_comparison.json", "w") as f:

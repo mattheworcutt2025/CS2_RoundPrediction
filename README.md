@@ -9,12 +9,15 @@ Predicts which team (CT or T) will win a given round in Counter-Strike 2 using d
 
 ## Results
 
-| Model | Test Accuracy | AUC-ROC |
-|-------|--------------|---------|
-| LSTM (round-start, 15 features) | 53.2% | — |
-| XGBoost (mid-round, 86 features) | 89.4% | 0.963 |
-| MLP (mid-round, 86 features) | 93.2% | — |
-| **MLP Tuned (Optuna, 50 trials)** | **95.75%** | **0.9945** |
+| Step | Model | Test Accuracy | AUC-ROC |
+|------|-------|--------------|---------|
+| 0a | Logistic Regression | 76.08% | 0.854 |
+| 0b | K-Nearest Neighbors (K=3) | 93.79% | 0.978 |
+| 0c | Random Forest (500 trees) | 89.85% | 0.966 |
+| 2 | LSTM (round-start, 15 features) | 53.21% | — |
+| 3 | XGBoost (86 features) | 89.39% | 0.964 |
+| 4 | MLP Standard (86 features) | 93.86% | 0.989 |
+| 5 | **MLP Tuned (Optuna, 50 trials)** | **95.75%** | **0.9945** |
 
 ### Best Model Architecture
 - **Type:** 5-layer MLP [896 → 832 → 576 → 512 → 192]
@@ -48,12 +51,16 @@ Features include player state, weapons, utility, economy, game state, map indica
 CS2_RoundPrediction/
 ├── README.md
 ├── scripts/
-│   ├── preprocess.py           # Basic feature extraction (15 features)
-│   ├── extract_snapshots.py    # Mid-round snapshot extraction (86 features)
-│   ├── train_lstm.py           # LSTM model (baseline)
-│   ├── train_mlp.py            # MLP model
-│   ├── train_xgboost.py        # XGBoost baseline
-│   └── tune_mlp.py             # Optuna hyperparameter tuning
+│   ├── 0a_logistic_regression.py  # Step 0: Logistic Regression baseline
+│   ├── 0b_knn.py                  # Step 0: K-Nearest Neighbors baseline
+│   ├── 0c_random_forest.py        # Step 0: Random Forest baseline
+│   ├── 1a_preprocess.py           # Step 1: Basic feature extraction (15 features)
+│   ├── 1b_extract_snapshots.py    # Step 1: Mid-round snapshot extraction (86 features)
+│   ├── 2_train_lstm.py            # Step 2: LSTM model (round-start)
+│   ├── 3_train_xgboost.py         # Step 3: XGBoost on snapshots
+│   ├── 4_train_mlp.py             # Step 4: MLP deep learning model
+│   ├── 5_tune_mlp.py              # Step 5: Optuna hyperparameter tuning
+│   └── 6_generate_results.py      # Generate all evaluation artifacts
 ├── config/
 │   ├── weapon_codes.json       # CS2 weapon ID mappings
 │   └── weapon_mapping.json     # Weapon category classifications
@@ -65,10 +72,16 @@ CS2_RoundPrediction/
 │   ├── scaler_params.json      # Feature scaling parameters
 │   └── scaler_params_tuned.json
 ├── results/
-│   ├── tuning_results.json     # Optuna tuning output
-│   ├── training_results.json   # LSTM training metrics
-│   ├── xgboost_results.json    # XGBoost metrics
-│   ├── training_curves.png     # Loss/accuracy plots
+│   ├── logistic_regression_results.json
+│   ├── knn_results.json
+│   ├── random_forest_results.json
+│   ├── lstm_results.json
+│   ├── xgboost_results.json
+│   ├── mlp_standard_results.json
+│   ├── tuning_results.json
+│   ├── model_comparison.json      # All 7 models side-by-side
+│   ├── model_evaluation.png       # ROC, confusion matrix, accuracy bars
+│   ├── tuning_analysis.png        # Optuna progress
 │   └── xgboost_feature_importance.png
 ├── notebooks/
 │   └── data_exploration.ipynb
@@ -81,14 +94,24 @@ CS2_RoundPrediction/
 ## Quick Start
 
 ```bash
-# 1. Extract snapshots from raw parquet data
-python scripts/extract_snapshots.py
+# Step 0: Train baselines
+python scripts/0a_logistic_regression.py
+python scripts/0b_knn.py
+python scripts/0c_random_forest.py
 
-# 2. Train MLP
-python scripts/train_mlp.py
+# Step 1: Data pipeline (requires raw parquet data on D:\CS2_Data)
+python scripts/1b_extract_snapshots.py
 
-# 3. Tune hyperparameters (requires GPU)
-python scripts/tune_mlp.py --trials 50
+# Step 2-4: Train models
+python scripts/2_train_lstm.py
+python scripts/3_train_xgboost.py
+python scripts/4_train_mlp.py
+
+# Step 5: Hyperparameter tuning (requires GPU)
+python scripts/5_tune_mlp.py --trials 50
+
+# Step 6: Generate all evaluation plots and comparison
+python scripts/6_generate_results.py
 ```
 
 **Requirements:** Python 3.12, PyTorch 2.10 (CUDA), Polars, scikit-learn, XGBoost, Optuna

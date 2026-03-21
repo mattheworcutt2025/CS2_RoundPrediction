@@ -1,0 +1,75 @@
+{
+  "model": "Random Forest",
+  "script": "scripts/0c_random_forest.py",
+  "type": "Ensemble (bagging)",
+  "features": 86,
+  "test_accuracy": 0.898499503968254,
+  "test_auc": 0.9656694126674858,
+  "val_accuracy": 0.8961989210640541,
+  "classification_report": {
+    "T Wins": {
+      "precision": 0.8920267802799756,
+      "recall": 0.9071552364446646,
+      "f1-score": 0.8995274044068005,
+      "support": 8078.0
+    },
+    "CT Wins": {
+      "precision": 0.9052192594464805,
+      "recall": 0.8898136645962733,
+      "f1-score": 0.8974503539434944,
+      "support": 8050.0
+    },
+    "accuracy": 0.898499503968254,
+    "macro avg": {
+      "precision": 0.8986230198632281,
+      "recall": 0.898484450520469,
+      "f1-score": 0.8984888791751474,
+      "support": 16128.0
+    },
+    "weighted avg": {
+      "precision": 0.8986115680583961,
+      "recall": 0.898499503968254,
+      "f1-score": 0.8984906821703412,
+      "support": 16128.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      7328,
+      750
+    ],
+    [
+      887,
+      7163
+    ]
+  ],
+  "hyperparameters": {
+    "n_estimators": 500,
+    "max_depth": null,
+    "min_samples_split": 5,
+    "min_samples_leaf": 2,
+    "max_features": "sqrt"
+  },
+  "feature_importance": {
+    "health_advantage": 0.08093382010111039,
+    "equipment_advantage": 0.07453386212581377,
+    "man_advantage": 0.05936194572803779,
+    "t_equipment_value": 0.03787520864156947,
+    "ct_equipment_value": 0.030464855351936704,
+    "rifle_advantage": 0.029867884357325424,
+    "t_armor_total": 0.029102901040457853,
+    "ct_money_total": 0.02703023717897203,
+    "t_money_total": 0.025339153447321898,
+    "ct_money_avg": 0.024856125721341712,
+    "t_money_avg": 0.024270277322143187,
+    "ct_armor_total": 0.023789934334353523,
+    "utility_advantage": 0.01970638919260465,
+    "t_health_total": 0.01920375727305568,
+    "ct_health_total": 0.01767238172934154,
+    "damage_dealt_t": 0.01756746718737149,
+    "t_has_armor_count": 0.016617691224387714,
+    "damage_dealt_ct": 0.016399979050866008,
+    "round_num": 0.01639976407008345,
+    "t_avg_wins": 0.014712861134034489
+  }
+}
