@@ -2,44 +2,44 @@
   "model": "Logistic Regression",
   "script": "scripts/0a_logistic_regression.py",
   "type": "Linear classifier",
-  "features": 86,
-  "test_accuracy": 0.7607886904761905,
-  "test_auc": 0.8538344618233096,
+  "features": 104,
+  "test_accuracy": 0.7614707341269841,
+  "test_auc": 0.8549037566952031,
   "classification_report": {
     "T Wins": {
-      "precision": 0.7594687653713723,
-      "recall": 0.7645456796236693,
-      "f1-score": 0.7619987661937075,
+      "precision": 0.7606258469878033,
+      "recall": 0.7642980935875217,
+      "f1-score": 0.7624575486261191,
       "support": 8078.0
     },
     "CT Wins": {
-      "precision": 0.7621310655327664,
-      "recall": 0.7570186335403727,
-      "f1-score": 0.7595662470397607,
+      "precision": 0.7623268006491075,
+      "recall": 0.7586335403726708,
+      "f1-score": 0.7604756864454268,
       "support": 8050.0
     },
-    "accuracy": 0.7607886904761905,
+    "accuracy": 0.7614707341269841,
     "macro avg": {
-      "precision": 0.7607999154520694,
-      "recall": 0.760782156582021,
-      "f1-score": 0.7607825066167342,
+      "precision": 0.7614763238184554,
+      "recall": 0.7614658169800963,
+      "f1-score": 0.7614666175357729,
       "support": 16128.0
     },
     "weighted avg": {
-      "precision": 0.7607976044276237,
-      "recall": 0.7607886904761905,
-      "f1-score": 0.7607846181784997,
+      "precision": 0.76147484729618,
+      "recall": 0.7614707341269841,
+      "f1-score": 0.7614683379022493,
       "support": 16128.0
     }
   },
   "confusion_matrix": [
     [
-      6176,
-      1902
+      6174,
+      1904
     ],
     [
-      1956,
-      6094
+      1943,
+      6107
     ]
   ],
   "hyperparameters": {
@@ -47,5 +47,5 @@
     "C": 1.0,
     "max_iter": 1000
   },
-  "num_coefficients": 86
+  "num_coefficients": 104
 }

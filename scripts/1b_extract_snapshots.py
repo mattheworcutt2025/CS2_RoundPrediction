@@ -181,7 +181,16 @@ def extract_snapshot_features(data, round_num, tick, ct_players, t_players,
     
     features['rifle_advantage'] = features['t_rifles'] - features['ct_rifles']
     features['awp_advantage'] = features['t_awps'] - features['ct_awps']
-    
+
+    # Pistol only (alive players with no primary weapon)
+    if 'inv_primary' in ct_ps.columns:
+        ct_alive_with_primary = len(ct_ps.filter((pl.col('health') > 0) & (pl.col('inv_primary') > 0)))
+        t_alive_with_primary = len(t_ps.filter((pl.col('health') > 0) & (pl.col('inv_primary') > 0)))
+    else:
+        ct_alive_with_primary, t_alive_with_primary = 0, 0
+    features['ct_pistol_only'] = ct_alive - ct_alive_with_primary
+    features['t_pistol_only'] = t_alive - t_alive_with_primary
+
     # ===== UTILITY FEATURES =====
     def sum_utility(team_ps, col):
         if col not in team_ps.columns:
@@ -225,6 +234,8 @@ def extract_snapshot_features(data, round_num, tick, ct_players, t_players,
         features['ct_equipment_value'] = 0.0
         features['t_equipment_value'] = 0.0
     features['equipment_advantage'] = features['t_equipment_value'] - features['ct_equipment_value']
+    features['ct_equipment_avg'] = features['ct_equipment_value'] / len(ct_ps) if len(ct_ps) > 0 else 0.0
+    features['t_equipment_avg'] = features['t_equipment_value'] / len(t_ps) if len(t_ps) > 0 else 0.0
     
     # ===== GAME STATE FEATURES =====
     # Bomb status
@@ -304,6 +315,8 @@ def extract_snapshot_features(data, round_num, tick, ct_players, t_players,
     
     features['ct_round_type'] = classify_round(avg_ct_money)
     features['t_round_type'] = classify_round(avg_t_money)
+    features['is_force_buy_ct'] = int(features['ct_round_type'] == 1)
+    features['is_force_buy_t'] = int(features['t_round_type'] == 1)
     
     # ===== MAP FEATURES =====
     if header_info:
@@ -319,6 +332,7 @@ def extract_snapshot_features(data, round_num, tick, ct_players, t_players,
         features['rank_diff'] = features['ct_avg_rank'] - features['t_avg_rank']
         features['ct_avg_wins'] = float(header_info.get('ct_starters_avg_wins', 0) or 0)
         features['t_avg_wins'] = float(header_info.get('t_starters_avg_wins', 0) or 0)
+        features['wins_diff'] = features['ct_avg_wins'] - features['t_avg_wins']
     else:
         for m in ['de_dust2', 'de_mirage', 'de_inferno', 'de_nuke', 
                   'de_overpass', 'de_vertigo', 'de_ancient', 'de_anubis']:
@@ -328,7 +342,8 @@ def extract_snapshot_features(data, round_num, tick, ct_players, t_players,
         features['rank_diff'] = 0.0
         features['ct_avg_wins'] = 0.0
         features['t_avg_wins'] = 0.0
-    
+        features['wins_diff'] = 0.0
+
     # ===== EVENT FEATURES =====
     # Kills before this tick
     if deaths_before_tick is not None and len(deaths_before_tick) > 0:
@@ -362,6 +377,27 @@ def extract_snapshot_features(data, round_num, tick, ct_players, t_players,
         else:
             features['headshot_kills_ct'] = 0
             features['headshot_kills_t'] = 0
+
+        # AWP kills
+        weapon_col = None
+        for col_name in ['weapon', 'weapon_code', 'attacker_weapon']:
+            if col_name in deaths_before_tick.columns:
+                weapon_col = col_name
+                break
+        if weapon_col:
+            features['awp_kills_ct'] = len(deaths_before_tick.filter(
+                (pl.col('player_team_code') == T_CODE) & (pl.col(weapon_col) == 9)
+            ))
+            features['awp_kills_t'] = len(deaths_before_tick.filter(
+                (pl.col('player_team_code') == CT_CODE) & (pl.col(weapon_col) == 9)
+            ))
+        else:
+            features['awp_kills_ct'] = 0
+            features['awp_kills_t'] = 0
+
+        # Time since last kill
+        last_death_tick = deaths_before_tick['tick'].max()
+        features['time_since_last_kill'] = (tick - last_death_tick) / 64.0
     else:
         features['kills_this_round_ct'] = 0
         features['kills_this_round_t'] = 0
@@ -369,6 +405,9 @@ def extract_snapshot_features(data, round_num, tick, ct_players, t_players,
         features['first_blood_t'] = 0
         features['headshot_kills_ct'] = 0
         features['headshot_kills_t'] = 0
+        features['awp_kills_ct'] = 0
+        features['awp_kills_t'] = 0
+        features['time_since_last_kill'] = features.get('time_elapsed', 0.0)
     
     # ===== DAMAGE FEATURES =====
     if damage_before_tick is not None and len(damage_before_tick) > 0:
@@ -384,7 +423,9 @@ def extract_snapshot_features(data, round_num, tick, ct_players, t_players,
     else:
         features['damage_dealt_ct'] = 0.0
         features['damage_dealt_t'] = 0.0
-    
+    features['damage_taken_ct'] = features['damage_dealt_t']
+    features['damage_taken_t'] = features['damage_dealt_ct']
+
     return features
 
 def process_match(match_path):
@@ -407,7 +448,12 @@ def process_match(match_path):
     
     all_features = []
     all_labels = []
-    
+
+    # Round history tracking
+    ct_won_last, t_won_last = 0, 0
+    ct_streak, t_streak = 0, 0
+    ct_loss_streak, t_loss_streak = 0, 0
+
     # Get unique rounds
     rounds = sorted(round_end['round'].unique().to_list())
     
@@ -498,9 +544,30 @@ def process_match(match_path):
                 )
                 
                 if features is not None:
+                    # Add historical features
+                    features['ct_won_last_round'] = ct_won_last
+                    features['t_won_last_round'] = t_won_last
+                    features['ct_win_streak'] = ct_streak
+                    features['t_win_streak'] = t_streak
+                    features['ct_loss_streak'] = ct_loss_streak
+                    features['t_loss_streak'] = t_loss_streak
                     all_features.append(features)
                     all_labels.append(label)
-                    
+
+            # Update history for next round
+            if label == 1:  # CT won
+                ct_won_last, t_won_last = 1, 0
+                ct_streak += 1
+                t_streak = 0
+                ct_loss_streak = 0
+                t_loss_streak += 1
+            else:  # T won
+                ct_won_last, t_won_last = 0, 1
+                ct_streak = 0
+                t_streak += 1
+                ct_loss_streak += 1
+                t_loss_streak = 0
+
         except Exception as e:
             continue
     
