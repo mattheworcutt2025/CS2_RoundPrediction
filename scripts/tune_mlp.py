@@ -44,9 +44,9 @@ import argparse
 # ============================================================
 DATA_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/data")
 MODEL_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/models")
-LOG_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/logs")
+RESULTS_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/results")
 MODEL_PATH.mkdir(parents=True, exist_ok=True)
-LOG_PATH.mkdir(parents=True, exist_ok=True)
+RESULTS_PATH.mkdir(parents=True, exist_ok=True)
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -287,7 +287,7 @@ def retrain_best(best_params, X_train, X_val, X_test, y_train, y_val, y_test, in
 
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            torch.save(model.state_dict(), MODEL_PATH / "MLP_Tuned_best.pth")
+            torch.save(model.state_dict(), MODEL_PATH / "mlp_tuned.pth")
             patience_counter = 0
         else:
             patience_counter += 1
@@ -300,7 +300,7 @@ def retrain_best(best_params, X_train, X_val, X_test, y_train, y_val, y_test, in
             break
 
     # Test evaluation — single forward pass on GPU
-    model.load_state_dict(torch.load(MODEL_PATH / "MLP_Tuned_best.pth", weights_only=True))
+    model.load_state_dict(torch.load(MODEL_PATH / "mlp_tuned.pth", weights_only=True))
     model.eval()
     with torch.no_grad():
         test_probs = model(X_test).squeeze()
@@ -399,7 +399,7 @@ def main():
         ]
     }
 
-    with open(LOG_PATH / "tuning_results.json", 'w') as f:
+    with open(RESULTS_PATH / "tuning_results.json", 'w') as f:
         json.dump(results, f, indent=2)
 
     # Compare with previous model
@@ -412,8 +412,8 @@ def main():
     print(f"  Improvement:             {(test_acc - 0.9321)*100:+.2f}%")
     print(f"{'='*60}")
 
-    print(f"\nResults saved to {LOG_PATH / 'tuning_results.json'}")
-    print(f"Tuned model saved to {MODEL_PATH / 'MLP_Tuned_best.pth'}")
+    print(f"\nResults saved to {RESULTS_PATH / 'tuning_results.json'}")
+    print(f"Tuned model saved to {MODEL_PATH / 'mlp_tuned.pth'}")
     print(f"\nCompleted: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 

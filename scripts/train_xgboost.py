@@ -14,7 +14,7 @@ from datetime import datetime
 
 # Paths
 DATA_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/data")
-LOG_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/logs")
+RESULTS_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/results")
 MODEL_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/models")
 
 def main():
@@ -151,7 +151,7 @@ def main():
         'confusion_matrix': confusion_matrix(y_test, y_pred).tolist()
     }
     
-    with open(LOG_PATH / "xgboost_results.json", 'w') as f:
+    with open(RESULTS_PATH / "xgboost_results.json", 'w') as f:
         json.dump(results, f, indent=2)
     
     # Plot feature importance
@@ -162,14 +162,14 @@ def main():
     plt.xlabel('Feature Importance')
     plt.title(f'Top {top_n} Features - {best_config["name"]}')
     plt.tight_layout()
-    plt.savefig(LOG_PATH / "xgboost_feature_importance.png", dpi=150)
+    plt.savefig(RESULTS_PATH / "xgboost_feature_importance.png", dpi=150)
     plt.close()
     
     # Save model
-    best_model.save_model(str(MODEL_PATH / "xgboost_best.json"))
+    best_model.save_model(str(MODEL_PATH / "xgboost.json"))
     
-    print(f"\nResults saved to {LOG_PATH}")
-    print(f"Model saved to {MODEL_PATH / 'xgboost_best.json'}")
+    print(f"\nResults saved to {RESULTS_PATH}")
+    print(f"Model saved to {MODEL_PATH / 'xgboost.json'}")
     print(f"\nCompleted: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 if __name__ == "__main__":

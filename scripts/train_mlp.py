@@ -36,9 +36,9 @@ import json
 # ============================================================
 DATA_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/data")
 MODEL_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/models")
-LOG_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/logs")
+RESULTS_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/results")
 MODEL_PATH.mkdir(parents=True, exist_ok=True)
-LOG_PATH.mkdir(parents=True, exist_ok=True)
+RESULTS_PATH.mkdir(parents=True, exist_ok=True)
 
 # ============================================================
 # HYPERPARAMETERS - these control how the model trains
@@ -372,7 +372,7 @@ def main():
         # Save the model if this is the best validation accuracy so far
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            torch.save(model.state_dict(), MODEL_PATH / "MLP_Standard_best.pth")
+            torch.save(model.state_dict(), MODEL_PATH / "mlp_standard.pth")
             patience_counter = 0  # Reset patience since we improved
         else:
             patience_counter += 1
@@ -399,7 +399,7 @@ def main():
     print("Final Test Evaluation")
     print(f"{'='*60}")
 
-    model.load_state_dict(torch.load(MODEL_PATH / "MLP_Standard_best.pth", weights_only=True))
+    model.load_state_dict(torch.load(MODEL_PATH / "mlp_standard.pth", weights_only=True))
     test_loss, test_acc, test_auc, test_preds, test_labels, test_probs = evaluate_model(
         model, test_loader, loss_function, DEVICE
     )
@@ -433,7 +433,7 @@ def main():
         'confusion_matrix': confusion_matrix(test_labels, test_preds).tolist()
     }
 
-    with open(LOG_PATH / "mlp_results.json", 'w') as f:
+    with open(RESULTS_PATH / "mlp_results.json", 'w') as f:
         json.dump(results, f, indent=2)
 
     # ----------------------------------------------------------
@@ -474,12 +474,12 @@ def main():
     axes[2].grid(True)
 
     plt.tight_layout()
-    plt.savefig(LOG_PATH / "mlp_training_curves.png", dpi=150)
+    plt.savefig(RESULTS_PATH / "mlp_training_curves.png", dpi=150)
     plt.close()
 
-    print(f"\nResults saved to {LOG_PATH / 'mlp_results.json'}")
-    print(f"Model saved to {MODEL_PATH / 'MLP_Standard_best.pth'}")
-    print(f"Training curves saved to {LOG_PATH / 'mlp_training_curves.png'}")
+    print(f"\nResults saved to {RESULTS_PATH / 'mlp_results.json'}")
+    print(f"Model saved to {MODEL_PATH / 'mlp_standard.pth'}")
+    print(f"Training curves saved to {RESULTS_PATH / 'mlp_training_curves.png'}")
     print(f"\nCompleted: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 

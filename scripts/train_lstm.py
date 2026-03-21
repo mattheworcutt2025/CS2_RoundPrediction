@@ -18,7 +18,7 @@ import json
 # Paths
 DATA_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/data")
 MODEL_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/models")
-LOG_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/logs")
+RESULTS_PATH = Path("C:/Users/Ratul Sarker/Desktop/CS2_RoundPrediction/results")
 
 # Hyperparameters
 SEQUENCE_LENGTH = 5  # Use last 5 rounds as context
@@ -202,7 +202,7 @@ def main():
         # Save best model
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            torch.save(model.state_dict(), MODEL_PATH / "best_model.pth")
+            torch.save(model.state_dict(), MODEL_PATH / "lstm_baseline.pth")
             patience_counter = 0
         else:
             patience_counter += 1
@@ -221,7 +221,7 @@ def main():
     print("Final Evaluation on Test Set")
     print("=" * 60)
     
-    model.load_state_dict(torch.load(MODEL_PATH / "best_model.pth"))
+    model.load_state_dict(torch.load(MODEL_PATH / "lstm_baseline.pth"))
     test_loss, test_acc, test_preds, test_actuals = evaluate(model, test_loader, criterion, DEVICE)
     
     print(f"\nTest Accuracy: {test_acc:.4f} ({test_acc*100:.2f}%)")
@@ -252,7 +252,7 @@ def main():
         'confusion_matrix': cm.tolist()
     }
     
-    with open(LOG_PATH / "training_results.json", 'w') as f:
+    with open(RESULTS_PATH / "lstm_results.json", 'w') as f:
         json.dump(results, f, indent=2)
     
     # Plot training curves
@@ -275,11 +275,11 @@ def main():
     axes[1].grid(True)
     
     plt.tight_layout()
-    plt.savefig(LOG_PATH / "training_curves.png", dpi=150)
+    plt.savefig(RESULTS_PATH / "lstm_training_curves.png", dpi=150)
     plt.close()
     
-    print(f"\nResults saved to {LOG_PATH}")
-    print(f"Best model saved to {MODEL_PATH / 'best_model.pth'}")
+    print(f"\nResults saved to {RESULTS_PATH}")
+    print(f"Best model saved to {MODEL_PATH / 'lstm_baseline.pth'}")
     print(f"\nCompleted: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 if __name__ == "__main__":
