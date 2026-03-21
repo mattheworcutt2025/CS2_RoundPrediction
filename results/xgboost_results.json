@@ -1,0 +1,49 @@
+{
+  "best_model": "XGB_Deep",
+  "test_accuracy": 0.8939389241977987,
+  "test_auc": 0.9635154952700066,
+  "cv_accuracy_mean": 0.8507859240020043,
+  "cv_accuracy_std": 0.002048614467896533,
+  "feature_importance": {
+    "man_advantage": 0.2979755401611328,
+    "equipment_advantage": 0.08364707231521606,
+    "health_advantage": 0.04708012938499451,
+    "t_alive": 0.01561773382127285,
+    "kills_this_round_t": 0.015275157056748867,
+    "t_has_armor_count": 0.014635787345468998,
+    "is_second_round": 0.011104928329586983,
+    "ct_has_primary": 0.009628242813050747,
+    "kills_this_round_ct": 0.009436320513486862,
+    "t_helmet_count": 0.009327521547675133,
+    "t_armor_total": 0.008929422125220299,
+    "ct_heavy": 0.008698866702616215,
+    "t_heavy": 0.008457296527922153,
+    "ct_has_armor_count": 0.008432572707533836,
+    "rank_diff": 0.008290830999612808,
+    "t_health_total": 0.008232739754021168,
+    "ct_shotguns": 0.008178808726370335,
+    "map_de_overpass": 0.00812203623354435,
+    "map_de_ancient": 0.00804517325013876,
+    "score_diff": 0.007916709408164024,
+    "t_avg_wins": 0.007841695100069046,
+    "map_de_anubis": 0.007730039302259684,
+    "t_equipment_value": 0.007646830752491951,
+    "is_pistol_round": 0.007614149246364832,
+    "ct_avg_wins": 0.007538940757513046,
+    "t_avg_rank": 0.007531357929110527,
+    "map_de_inferno": 0.007515703793615103,
+    "round_num": 0.007393314503133297,
+    "t_has_primary": 0.0073525570333004,
+    "t_shotguns": 0.007340496405959129
+  },
+  "confusion_matrix": [
+    [
+      14539,
+      1616
+    ],
+    [
+      1805,
+      14295
+    ]
+  ]
+}

@@ -1,19 +1,17 @@
 # Data files (too large for GitHub)
-data/
-*.npy
-*.parquet
-*.csv
+data/*.npy
+data/*.parquet
+data/csv_exports/
+data/sample_match_csv/
 
-# Model checkpoints
-models/
-*.pth
-*.pt
-*.h5
-*.pkl
-
-# Logs
-logs/
-*.log
+# Model weights (too large for GitHub)
+models/*.pth
+models/*.pt
+models/*.h5
+models/*.pkl
+models/*.json
+!models/scaler_params.json
+!models/scaler_params_tuned.json
 
 # Python
 __pycache__/
@@ -33,6 +31,8 @@ env/
 # IDE
 .vscode/
 .idea/
+.cursor/
+.claude/
 *.swp
 *.swo
 
