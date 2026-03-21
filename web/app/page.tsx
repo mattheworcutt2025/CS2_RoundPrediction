@@ -97,24 +97,24 @@ export default function Home() {
   const [state, setState] = useState<GameState>(defaultState);
   const [result, setResult] = useState<{ ct: number; t: number } | null>(null);
   const [loading, setLoading] = useState(false);
-  const [modelReady, setModelReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const set = useCallback(
     <K extends keyof GameState>(key: K, val: GameState[K]) => {
       setState((prev) => ({ ...prev, [key]: val }));
-      setResult(null);
     },
     []
   );
 
   const runPrediction = async () => {
     setLoading(true);
+    setError(null);
     try {
       const prob = await predict(state);
       setResult({ ct: prob, t: 1 - prob });
-      if (!modelReady) setModelReady(true);
     } catch (e) {
       console.error(e);
+      setError(e instanceof Error ? e.message : "Model failed to load");
     }
     setLoading(false);
   };
@@ -143,39 +143,61 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Result Bar */}
+      {/* Error */}
+      {error && (
+        <div className="mb-6 p-4 rounded-xl bg-red-900/30 border border-red-700 text-red-300 text-center">
+          {error}
+        </div>
+      )}
+
+      {/* Result */}
       {result && (
-        <div className="mb-8 p-6 rounded-2xl bg-[#16213e] border border-[#0f3460]/50">
-          <div className="flex items-center gap-4 mb-3">
-            <div className="flex-1 text-right">
-              <div className="text-3xl font-bold text-yellow-400">{tWinPct}%</div>
-              <div className="text-sm text-yellow-600 font-medium">T Side</div>
+        <div className="mb-8 rounded-2xl bg-[#16213e] border border-[#0f3460]/50 overflow-hidden">
+          {/* Winner Banner */}
+          <div className={`py-4 px-6 text-center ${
+            ctWinPct! > tWinPct!
+              ? "bg-gradient-to-r from-[#1a3a6e] to-[#0f3460]"
+              : ctWinPct! < tWinPct!
+              ? "bg-gradient-to-r from-[#5c4a00] to-[#3d3100]"
+              : "bg-[#1a1a2e]"
+          }`}>
+            <div className="text-xs uppercase tracking-widest text-gray-400 mb-1">Predicted Winner</div>
+            <div className={`text-3xl font-black uppercase tracking-wide ${
+              ctWinPct! > tWinPct! ? "text-[#5d9bec]" : ctWinPct! < tWinPct! ? "text-yellow-400" : "text-gray-300"
+            }`}>
+              {ctWinPct! > tWinPct! ? "Counter-Terrorists" : ctWinPct! < tWinPct! ? "Terrorists" : "Coin Flip"}
             </div>
-            <div className="w-full max-w-md h-8 bg-[#0a0a1a] rounded-full overflow-hidden flex border border-gray-700/50">
-              <div
-                className="h-full bg-gradient-to-r from-yellow-600 to-yellow-500 transition-all duration-500"
-                style={{ width: `${tWinPct}%` }}
-              />
-              <div
-                className="h-full bg-gradient-to-r from-[#4b7bec] to-[#3867d6] transition-all duration-500"
-                style={{ width: `${ctWinPct}%` }}
-              />
-            </div>
-            <div className="flex-1">
-              <div className="text-3xl font-bold text-[#5d9bec]">{ctWinPct}%</div>
-              <div className="text-sm text-blue-400 font-medium">CT Side</div>
+            <div className="text-sm text-gray-400 mt-1">
+              {ctWinPct! > 60 || tWinPct! > 60
+                ? "Strong advantage"
+                : ctWinPct! > 55 || tWinPct! > 55
+                ? "Moderate advantage"
+                : "Close call"}
             </div>
           </div>
-          <div className="text-center text-sm text-gray-400 font-medium">
-            {ctWinPct! > 60
-              ? "CT side has a strong advantage"
-              : ctWinPct! > 50
-              ? "Slight CT advantage"
-              : tWinPct! > 60
-              ? "T side has a strong advantage"
-              : tWinPct! > 50
-              ? "Slight T advantage"
-              : "This round is a coin flip"}
+
+          {/* Probability Bar */}
+          <div className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="flex-1 text-right">
+                <div className="text-3xl font-bold text-yellow-400">{tWinPct}%</div>
+                <div className="text-sm text-yellow-600 font-medium">T Side</div>
+              </div>
+              <div className="w-full max-w-md h-10 bg-[#0a0a1a] rounded-full overflow-hidden flex border border-gray-700/50">
+                <div
+                  className="h-full bg-gradient-to-r from-yellow-600 to-yellow-500 transition-all duration-500"
+                  style={{ width: `${tWinPct}%` }}
+                />
+                <div
+                  className="h-full bg-gradient-to-r from-[#4b7bec] to-[#3867d6] transition-all duration-500"
+                  style={{ width: `${ctWinPct}%` }}
+                />
+              </div>
+              <div className="flex-1">
+                <div className="text-3xl font-bold text-[#5d9bec]">{ctWinPct}%</div>
+                <div className="text-sm text-blue-400 font-medium">CT Side</div>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -286,9 +308,7 @@ export default function Home() {
       </button>
 
       <p className="text-center text-xs text-gray-500 mt-6">
-        MLP Neural Network (104 features, [896-704-448-448]) trained on 171K CS2 round snapshots
-        <br />
-        Model runs entirely in your browser via ONNX Runtime
+        MLP Neural Network trained on 171K CS2 round snapshots
       </p>
     </main>
   );
