@@ -814,5 +814,45 @@
         "optimizer": "AdamW"
       }
     }
-  ]
+  ],
+  "classification_report": {
+    "T Wins": {
+      "precision": 0.9567474048442907,
+      "recall": 0.9584055459272097,
+      "f1-score": 0.9575757575757575,
+      "support": 8078.0
+    },
+    "CT Wins": {
+      "precision": 0.9581881533101045,
+      "recall": 0.9565217391304348,
+      "f1-score": 0.9573542210617929,
+      "support": 8050.0
+    },
+    "accuracy": 0.9574652777777778,
+    "macro avg": {
+      "precision": 0.9574677790771976,
+      "recall": 0.9574636425288223,
+      "f1-score": 0.9574649893187752,
+      "support": 16128.0
+    },
+    "weighted avg": {
+      "precision": 0.9574665284274877,
+      "recall": 0.9574652777777778,
+      "f1-score": 0.9574651816247769,
+      "support": 16128.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      7742,
+      336
+    ],
+    [
+      350,
+      7700
+    ]
+  ],
+  "parameters": 1704193,
+  "script": "scripts/tune_mlp.py",
+  "model_file": "models/mlp_tuned.pth"
 }

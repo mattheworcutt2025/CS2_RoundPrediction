@@ -1,0 +1,91 @@
+{
+  "models": [
+    {
+      "name": "LSTM (round-start)",
+      "script": "scripts/train_lstm.py",
+      "model_file": "models/lstm_baseline.pth",
+      "type": "Bidirectional LSTM",
+      "features": 15,
+      "data": "round-start only (9,746 rounds)",
+      "test_accuracy": 0.5321,
+      "test_auc": null,
+      "parameters": 199553,
+      "epochs_trained": 46,
+      "notes": "Baseline - predicting at round start is nearly impossible"
+    },
+    {
+      "name": "XGBoost",
+      "script": "scripts/train_xgboost.py",
+      "model_file": "models/xgboost.json",
+      "type": "Gradient Boosted Trees",
+      "features": 86,
+      "data": "mid-round snapshots (161,271 snapshots)",
+      "test_accuracy": 0.8939,
+      "test_auc": 0.9635,
+      "cv_accuracy": "85.08% +/- 0.20%",
+      "notes": "Feature validation baseline - confirmed features have signal"
+    },
+    {
+      "name": "MLP Standard",
+      "script": "scripts/train_mlp.py",
+      "model_file": "models/mlp_standard.pth",
+      "type": "Feedforward MLP",
+      "architecture": [
+        512,
+        256,
+        128,
+        64
+      ],
+      "features": 86,
+      "data": "mid-round snapshots (161,271 snapshots)",
+      "test_accuracy": 0.9386160714285714,
+      "test_auc": 0.9888426736831423,
+      "parameters": 219009,
+      "notes": "Deep learning model for course requirement"
+    },
+    {
+      "name": "MLP Tuned (Optuna)",
+      "script": "scripts/tune_mlp.py",
+      "model_file": "models/mlp_tuned.pth",
+      "type": "Feedforward MLP (Optuna-optimized)",
+      "architecture": [
+        896,
+        832,
+        576,
+        512,
+        192
+      ],
+      "features": 86,
+      "data": "mid-round snapshots (161,271 snapshots)",
+      "test_accuracy": 0.9574652777777778,
+      "test_auc": 0.9944799616779875,
+      "parameters": 1704193,
+      "optuna_trials": 50,
+      "best_val_accuracy": 0.9480374455451965,
+      "notes": "Best model - 50 Optuna trials with GPU-accelerated search"
+    }
+  ],
+  "dataset": {
+    "source": "Kaggle CS2 Dataset (December 10, 2023)",
+    "total_matches": 530,
+    "total_rounds": 9746,
+    "total_snapshots": 161271,
+    "features": 86,
+    "splits": {
+      "train": 129016,
+      "val": 16127,
+      "test": 16128
+    },
+    "class_balance": {
+      "ct_wins_pct": 49.9,
+      "t_wins_pct": 50.1
+    }
+  },
+  "key_findings": [
+    "Round-start prediction (53%) vs mid-round snapshots (95.75%) shows game state during round is far more predictive than pre-round economy",
+    "man_advantage (player count diff) is the single most important feature at 29.8% importance",
+    "Deep learning (MLP) outperforms XGBoost by 6.4% on this task",
+    "Optuna tuning improved MLP accuracy by 2.5% (93.2% -> 95.75%)",
+    "Wider/deeper architectures with low dropout (0.1) work best"
+  ]
+}
