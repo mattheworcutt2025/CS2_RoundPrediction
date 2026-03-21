@@ -126,28 +126,9 @@ export default function Home() {
     <main className="max-w-4xl mx-auto px-4 py-8 relative">
       {/* Header with T and CT */}
       <div className="relative mb-10">
-        {/* AK-47 (T side) - left */}
-        <div className="hidden md:block absolute -left-20 top-1/2 -translate-y-1/2 opacity-15">
-          <svg width="140" height="60" viewBox="0 0 140 60" fill="none">
-            <path d="M5 28 L40 26 L45 24 L95 22 L100 20 L130 20 L135 22 L130 24 L100 24 L95 26 L80 26 L78 35 L82 45 L78 46 L74 36 L72 28 L45 28 L40 30 L35 40 L38 50 L34 50 L30 38 L28 30 L5 32 Z" fill="#ca8a04"/>
-            <rect x="95" y="15" width="3" height="8" fill="#ca8a04"/>
-            <path d="M42 28 L44 38 L40 38 L38 28" fill="#ca8a04"/>
-          </svg>
-        </div>
-
-        {/* M4A4 (CT side) - right */}
-        <div className="hidden md:block absolute -right-20 top-1/2 -translate-y-1/2 opacity-15 -scale-x-100">
-          <svg width="140" height="60" viewBox="0 0 140 60" fill="none">
-            <path d="M5 26 L25 25 L30 23 L90 21 L95 19 L130 19 L135 21 L130 23 L95 23 L90 25 L75 25 L73 32 L76 42 L72 43 L69 33 L67 27 L30 27 L25 29 L20 38 L16 38 L20 29 L5 30 Z" fill="#5d9bec"/>
-            <rect x="90" y="14" width="3" height="8" fill="#5d9bec"/>
-            <rect x="100" y="17" width="15" height="3" rx="1" fill="#5d9bec"/>
-            <path d="M60 27 L62 22 L65 22 L63 27" fill="#5d9bec"/>
-          </svg>
-        </div>
-
         <div className="text-center">
           <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-[#0f3460]/50 border border-[#0f3460]">
-            <span className="text-xs text-gray-300 tracking-wide">MGTA 611 &mdash; MMA Field Project</span>
+            <span className="text-xs text-gray-300 tracking-wide">MGTA 611 &mdash; Course Project</span>
           </div>
           <h1 className="text-5xl font-black mb-3 tracking-tight">
             <span className="text-yellow-400">CS2</span>{" "}
@@ -173,7 +154,7 @@ export default function Home() {
 
       {/* Result */}
       {result && (
-        <div className="mb-8 rounded-2xl bg-[#16213e] border border-[#0f3460]/50 overflow-hidden">
+        <div className="mb-8 rounded-2xl bg-[#16213e]/90 backdrop-blur-sm border border-[#0f3460]/50 overflow-hidden">
           {/* Winner Banner */}
           <div className={`py-4 px-6 text-center ${
             ctWinPct! > tWinPct!
@@ -225,7 +206,7 @@ export default function Home() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {/* T Side */}
-        <div className="p-5 rounded-xl bg-[#16213e] border border-yellow-900/30">
+        <div className="p-5 rounded-xl bg-[#16213e]/90 backdrop-blur-sm border border-yellow-900/30">
           <h2 className="text-lg font-bold text-yellow-400 mb-4 uppercase tracking-wider">
             Terrorists
           </h2>
@@ -241,7 +222,7 @@ export default function Home() {
         </div>
 
         {/* CT Side */}
-        <div className="p-5 rounded-xl bg-[#16213e] border border-blue-900/30">
+        <div className="p-5 rounded-xl bg-[#16213e]/90 backdrop-blur-sm border border-blue-900/30">
           <h2 className="text-lg font-bold text-[#5d9bec] mb-4 uppercase tracking-wider">
             Counter-Terrorists
           </h2>
@@ -258,7 +239,7 @@ export default function Home() {
       </div>
 
       {/* Round State */}
-      <div className="p-5 rounded-xl bg-[#16213e] border border-gray-700/30 mb-8">
+      <div className="p-5 rounded-xl bg-[#16213e]/90 backdrop-blur-sm border border-gray-700/30 mb-8">
         <h2 className="text-lg font-bold text-gray-200 mb-4 uppercase tracking-wider">Round State</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
           <div>

@@ -1,8 +1,25 @@
 @import "tailwindcss";
 
 body {
-  background-image:
-    radial-gradient(circle at 15% 50%, rgba(202, 138, 4, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 85% 50%, rgba(93, 155, 236, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 50% 0%, rgba(15, 52, 96, 0.15) 0%, transparent 60%);
+  background-color: #1a1508;
+  background-image: url("https://cdn.fastly.steamstatic.com/apps/csgo/images/csgo_react/social/cs2.jpg");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 16, 6, 0.75) 0%,
+    rgba(20, 16, 6, 0.88) 30%,
+    rgba(20, 16, 6, 0.95) 60%,
+    rgba(20, 16, 6, 0.98) 100%
+  );
+  z-index: -1;
+  pointer-events: none;
 }
