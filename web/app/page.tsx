@@ -123,24 +123,51 @@ export default function Home() {
   const tWinPct = result ? Math.round(result.t * 100) : null;
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="text-center mb-10">
-        <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-[#0f3460]/50 border border-[#0f3460]">
-          <span className="text-xs text-gray-300 tracking-wide">MGTA621/622 &mdash; MMA Field Project</span>
+    <main className="max-w-4xl mx-auto px-4 py-8 relative">
+      {/* Header with T and CT */}
+      <div className="relative mb-10">
+        {/* T character - left */}
+        <div className="hidden md:block absolute -left-16 top-1/2 -translate-y-1/2 opacity-20">
+          <svg width="100" height="140" viewBox="0 0 100 140" fill="none">
+            <circle cx="50" cy="20" r="16" fill="#ca8a04"/>
+            <path d="M50 36 L30 55 L25 90 L35 90 L40 70 L50 80 L60 70 L65 90 L75 90 L70 55 Z" fill="#ca8a04"/>
+            <path d="M30 55 L15 80 L25 82 L35 65" fill="#ca8a04"/>
+            <path d="M70 55 L85 75 L75 78 L65 62" fill="#ca8a04"/>
+            <rect x="80" y="65" width="15" height="4" rx="2" fill="#ca8a04" transform="rotate(-20 80 65)"/>
+            <path d="M35 90 L30 130 L40 130 L45 95 M65 90 L70 130 L60 130 L55 95" fill="#ca8a04"/>
+          </svg>
         </div>
-        <h1 className="text-5xl font-black mb-3 tracking-tight">
-          <span className="text-yellow-400">CS2</span>{" "}
-          <span className="text-white">Round Predictor</span>
-        </h1>
-        <p className="text-gray-400 text-sm mb-3">
-          Deep learning model with <span className="text-yellow-400 font-semibold">96.71% accuracy</span>
-          <span className="text-gray-600"> | </span>
-          104 features &middot; 1.2M parameters &middot; runs in your browser
-        </p>
-        <p className="text-gray-500 text-xs">
-          By <span className="text-gray-300 font-medium">Ratul Sarker</span> &amp; <span className="text-gray-300 font-medium">Matthew Orcutt</span>
-        </p>
+
+        {/* CT character - right */}
+        <div className="hidden md:block absolute -right-16 top-1/2 -translate-y-1/2 opacity-20">
+          <svg width="100" height="140" viewBox="0 0 100 140" fill="none">
+            <circle cx="50" cy="18" r="16" fill="#5d9bec"/>
+            <path d="M45 8 L55 8 L55 5 L45 5 Z" fill="#5d9bec"/>
+            <path d="M50 34 L28 55 L23 90 L33 90 L38 70 L50 80 L62 70 L67 90 L77 90 L72 55 Z" fill="#5d9bec"/>
+            <path d="M28 55 L10 78 L20 82 L33 62" fill="#5d9bec"/>
+            <path d="M72 55 L88 72 L78 76 L67 60" fill="#5d9bec"/>
+            <rect x="82" y="62" width="18" height="4" rx="2" fill="#5d9bec" transform="rotate(-15 82 62)"/>
+            <path d="M33 90 L28 130 L38 130 L43 95 M67 90 L72 130 L62 130 L57 95" fill="#5d9bec"/>
+          </svg>
+        </div>
+
+        <div className="text-center">
+          <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-[#0f3460]/50 border border-[#0f3460]">
+            <span className="text-xs text-gray-300 tracking-wide">MGTA621/622 &mdash; MMA Field Project</span>
+          </div>
+          <h1 className="text-5xl font-black mb-3 tracking-tight">
+            <span className="text-yellow-400">CS2</span>{" "}
+            <span className="text-white">Round Predictor</span>
+          </h1>
+          <p className="text-gray-400 text-sm mb-3">
+            Deep learning model with <span className="text-yellow-400 font-semibold">96.71% accuracy</span>
+            <span className="text-gray-600"> | </span>
+            104 features &middot; 1.2M parameters &middot; runs in your browser
+          </p>
+          <p className="text-gray-500 text-xs">
+            By <span className="text-gray-300 font-medium">Ratul Sarker</span> &amp; <span className="text-gray-300 font-medium">Matthew Orcutt</span>
+          </p>
+        </div>
       </div>
 
       {/* Error */}
