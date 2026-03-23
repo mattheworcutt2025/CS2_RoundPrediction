@@ -4,6 +4,19 @@ let session: ort.InferenceSession | null = null;
 let scalerMean: number[] | null = null;
 let scalerStd: number[] | null = null;
 
+// Python-compatible rounding (banker's rounding / round-half-to-even)
+// JS Math.round(2.5) = 3, but Python round(2.5) = 2
+// The model was trained with Python's rounding, so we must match it.
+function pyRound(n: number): number {
+  const floor = Math.floor(n);
+  const decimal = n - floor;
+  if (Math.abs(decimal - 0.5) < 1e-9) {
+    // Exactly .5 — round to even
+    return floor % 2 === 0 ? floor : floor + 1;
+  }
+  return Math.round(n);
+}
+
 async function loadModel() {
   if (!session) {
     ort.env.wasm.numThreads = 1;
@@ -42,7 +55,7 @@ function estimateEquipmentValue(
 ): number {
   const rifleValue = rifles * 2900;
   const awpValue = awps * 4750;
-  const armoredPlayers = Math.round(alive * armorPct / 100);
+  const armoredPlayers = pyRound(alive * armorPct / 100);
   const armorValue = armoredPlayers * 1000;
   const pistolPlayers = alive - rifles - awps;
   const pistolValue = Math.max(0, pistolPlayers) * 500;
@@ -66,8 +79,8 @@ export function buildFeatureVector(state: GameState): number[] {
   // Armor (100 armor per player max)
   const ct_armor_total = ct_alive * state.ct_armor_pct; // pct acts as avg armor value
   const t_armor_total = t_alive * state.t_armor_pct;
-  const ct_armored = Math.round(ct_alive * Math.min(state.ct_armor_pct, 100) / 100);
-  const t_armored = Math.round(t_alive * Math.min(state.t_armor_pct, 100) / 100);
+  const ct_armored = pyRound(ct_alive * Math.min(state.ct_armor_pct, 100) / 100);
+  const t_armored = pyRound(t_alive * Math.min(state.t_armor_pct, 100) / 100);
   // Helmets: in full buys most armored players have helmets, eco rounds fewer
   const ct_helmets = state.ct_armor_pct >= 50 ? ct_armored : Math.floor(ct_armored * 0.5);
   const t_helmets = state.t_armor_pct >= 50 ? t_armored : Math.floor(t_armored * 0.5);
@@ -226,8 +239,8 @@ export function buildFeatureVector(state: GameState): number[] {
     t_kills,                                     // 86: kills_this_round_t
     first_blood_ct,                              // 87: first_blood_ct
     first_blood_t,                               // 88: first_blood_t
-    Math.round(ct_kills * 0.4),                  // 89: headshot_kills_ct
-    Math.round(t_kills * 0.4),                   // 90: headshot_kills_t
+    pyRound(ct_kills * 0.4),                      // 89: headshot_kills_ct
+    pyRound(t_kills * 0.4),                      // 90: headshot_kills_t
     0,                                           // 91: awp_kills_ct
     0,                                           // 92: awp_kills_t
     time_since_last_kill,                        // 93: time_since_last_kill
