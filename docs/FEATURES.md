@@ -256,7 +256,7 @@ def classify_round_type(avg_team_money):
 - Bomb status
 - Time remaining
 - Map
-- Player ranks ⭐
+- Player ranks 
 
 ### Should Have (Phase 2-3)
 - Economy features
