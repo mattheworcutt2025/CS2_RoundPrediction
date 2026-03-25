@@ -1,7 +1,7 @@
 # CS2 Round Prediction — Deep Learning
 
 **Course:** MGTA621/622 (MMA Field Project)
-**Team:** Ratul Sarker, Sam Matthew
+**Team:** Ratul Sarker, Matthew Orcutt
 
 Predicts which team (CT or T) will win a given round in Counter-Strike 2 using deep learning on mid-round game state snapshots.
 
